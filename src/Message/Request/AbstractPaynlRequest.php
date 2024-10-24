@@ -27,6 +27,10 @@ abstract class AbstractPaynlRequest extends AbstractRequest
      */
     public function sendRequestMultiCore($endpoint, array $data = null, string $method = 'GET', $fetchConfig = false)
     {
+        if (!$fetchConfig) {
+            return $this->sendRequestRestApi($endpoint, $data, $method);
+        }
+
         $configResponse = $this->sendRequestRestApi('services/config');
 
         $decodedResponse = new FetchServiceConfigResponse($this, $configResponse);
