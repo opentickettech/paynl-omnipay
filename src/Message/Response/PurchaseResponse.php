@@ -21,7 +21,22 @@ class PurchaseResponse extends AbstractPaynlResponseWithLinks implements Redirec
      */
     public function isRedirect()
     {
-        return isset($this->data['links']['redirect']);
+        return isset($this->data['paymentUrl']);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getRedirectUrl()
+    {
+        $url = $this->data['paymentUrl'];
+
+        if (array_key_exists('cardToken', $this->data)) {
+            $url .= (parse_url($url, PHP_URL_QUERY) ? '&' : '?')
+                    . "action=process&cardToken={$this->data['cardToken']}";
+        }
+
+        return $url;
     }
 
     /**
